@@ -1,0 +1,14 @@
+{
+  "owner": { "name": "اسم المالك" },
+  "assistant": { "name": "مساعدي" },
+  "language": "ar",
+  "timezone": "Asia/Riyadh",
+  "workweek": [0, 1, 2, 3, 4],
+  "signature": "",
+  "user_type": "non_programmer",
+  "github": { "owner": "github-user", "self_repo": "github-user/my-assistant", "default_branch": "main", "template_repo": "Nfarahat99/assistant-template" },
+  "self_aliases": [],
+  "interests": "",
+  "hosting": { "provider": "railway" },
+  "direct_send_allowlist": []
+}

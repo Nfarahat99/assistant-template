@@ -1,0 +1,100 @@
+name: Claude Code
+run-name: "claude ${{ inputs.request_id || github.event.issue.number }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt: { description: "What Claude should do", required: true, type: string }
+      request_id: { description: "Request id (from the assistant)", required: true, type: string }
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+jobs:
+  claude:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude') &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) ||
+      (github.event_name == 'issues' && contains(format('{0} {1}', github.event.issue.title, github.event.issue.body), '@claude') &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: claude-${{ github.repository }}-${{ inputs.request_id || github.run_id }}
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Prepare request
+        id: req
+        shell: bash
+        env:
+          RAW_ID: ${{ inputs.request_id || format('c{0}', github.run_id) }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          id="$(printf '%s' "$RAW_ID" | tr -c 'A-Za-z0-9._-' '-' | cut -c1-60)"
+          base="${DEFAULT_BRANCH:-main}"
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+          echo "branch=claude/req-$id" >> "$GITHUB_OUTPUT"
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          echo "base_sha=$(git rev-parse "origin/$base")" >> "$GITHUB_OUTPUT"
+          git config --global user.name "claude[bot]"
+          git config --global user.email "209825114+claude[bot]@users.noreply.github.com"
+          mkdir -p .git/hooks
+          cat > .git/hooks/pre-push <<HOOK
+          #!/bin/sh
+          while read l ls r rs; do [ "\$r" = "refs/heads/$base" ] && { echo "BLOCKED: push to default branch $base" >&2; exit 1; }; done; exit 0
+          HOOK
+          chmod +x .git/hooks/pre-push
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ github.token }}
+          base_branch: ${{ steps.req.outputs.base }}
+          plugin_marketplaces: "https://github.com/anthropics/claude-plugins-official.git"
+          plugins: "superpowers@claude-plugins-official"
+          claude_args: |
+            --max-turns 40
+            --allowedTools "Bash,Read,Edit,MultiEdit,Write,Glob,Grep,LS,TodoWrite,Skill,Task,Agent,WebSearch"
+          prompt: |
+            You are working in ${{ github.repository }} (checked out in the current directory). Read CLAUDE.md first.
+            Request id: ${{ steps.req.outputs.id }}
+
+            ## Request from the owner
+            ${{ inputs.prompt || github.event.comment.body || format('{0}{1}{2}', github.event.issue.title, fromJSON('"\n\n"'), github.event.issue.body) }}
+
+            ## How to deliver (mandatory)
+            1. `git checkout -B ${{ steps.req.outputs.branch }} origin/${{ steps.req.outputs.base }}`.
+            2. Make the change (TDD). Only what was asked.
+            3. Run `npm run typecheck` and `npm test`; fix what you broke.
+            4. Commit, then `git push -u origin ${{ steps.req.outputs.branch }}`.
+            5. `gh pr create --base ${{ steps.req.outputs.base }} --head ${{ steps.req.outputs.branch }}`:
+               title starts with `[claude] `; body contains the exact line `request-id: ${{ steps.req.outputs.id }}`,
+               a `## الشرح` section (plain Arabic for a non-technical owner) and a `## التحقق` section (real commands + results).
+            6. Never push to `${{ steps.req.outputs.base }}`, never force-push, never commit secrets.
+            If the request cannot be done, open no PR and print the reason as your final message.
+      - name: Guard - default branch untouched
+        if: always()
+        shell: bash
+        env:
+          BASE: ${{ steps.req.outputs.base }}
+          BASE_SHA: ${{ steps.req.outputs.base_sha }}
+        run: |
+          now="$(git ls-remote origin "refs/heads/$BASE" | cut -f1)"
+          if [ -n "$BASE_SHA" ] && [ "$now" != "$BASE_SHA" ]; then echo "::error::default branch moved ($BASE_SHA -> $now)"; exit 1; fi

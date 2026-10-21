@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F5F6F3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0D1311" media="(prefers-color-scheme: dark)">
+<meta name="robots" content="noindex, nofollow">
+<meta name="assistant-name" content="{{assistant}}">
+<title>لوحة مساعد {{assistant}}</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<script src="theme.js"></script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<section id="login" class="login" hidden aria-labelledby="login-title">
+  <form class="login-card" id="login-form" novalidate>
+    <div class="brand brand-lg"><span class="brand-mark" aria-hidden="true">{{assistant_initial}}</span></div>
+    <h1 id="login-title">لوحة مساعد {{assistant}}</h1>
+    <p class="muted">أدخل كلمة المرور للمتابعة.</p>
+    <div class="field">
+      <label for="login-pass">كلمة المرور</label>
+      <div class="input-wrap">
+        <input id="login-pass" name="password" type="password" autocomplete="current-password" required dir="ltr" aria-describedby="login-err">
+        <button type="button" class="icon-btn input-addon" id="login-toggle" aria-label="إظهار كلمة المرور" aria-pressed="false"></button>
+      </div>
+      <p class="field-error" id="login-err" role="alert"></p>
+    </div>
+    <button class="btn btn-primary btn-block" type="submit" id="login-submit">دخول</button>
+  </form>
+</section>
+
+<div id="app" class="app" hidden>
+  <aside class="sidebar" aria-label="القائمة الجانبية">
+    <a class="brand" href="#/overview"><span class="brand-mark" aria-hidden="true">{{assistant_initial}}</span><span><b>مساعد {{assistant}}</b><small>لوحة التحكم</small></span></a>
+    <nav aria-label="الأقسام"><ul class="side-nav" id="side-nav"></ul></nav>
+    <div class="side-foot">
+      <button class="nav-link" type="button" data-action="theme"></button>
+      <button class="nav-link nav-danger" type="button" data-action="logout"></button>
+    </div>
+  </aside>
+  <header class="topbar">
+    <a class="brand" href="#/overview"><span class="brand-mark" aria-hidden="true">{{assistant_initial}}</span><b>مساعد {{assistant}}</b></a>
+    <span class="mock-pill" id="mock-pill" hidden>بيانات تجريبية</span>
+    <button class="icon-btn" type="button" data-action="theme"></button>
+  </header>
+  <main id="main" tabindex="-1"></main>
+  <nav class="bottom-nav" aria-label="التنقل الرئيسي"><ul id="bottom-nav"></ul></nav>
+</div>
+
+<dialog id="more-sheet" class="sheet" aria-labelledby="more-title">
+  <div class="sheet-head"><h2 id="more-title">المزيد</h2><button class="icon-btn" type="button" data-close aria-label="إغلاق"></button></div>
+  <ul class="sheet-list" id="more-list"></ul>
+</dialog>
+
+<div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
+</body>
+</html>

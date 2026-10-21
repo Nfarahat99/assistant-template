@@ -1,0 +1,69 @@
+name: template-sync
+on:
+  schedule:
+    - cron: "0 3 * * 0"   # الأحد 06:00 بتوقيت الرياض
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  sync:
+    # لا يشتغل داخل مستودع القالب نفسه
+    if: github.repository != 'Nfarahat99/assistant-template'
+    runs-on: ubuntu-latest
+    env:
+      # PAT واحد: قراءة القالب + كتابة contents/pull-requests/workflows على هذا المستودع.
+      # GITHUB_TOKEN لا يقدر يدفع تغييرات .github/workflows ولا تشغّل PRs المفتوحة به الـ CI.
+      TPL_TOKEN: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+      GH_TOKEN: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Require TEMPLATE_SYNC_TOKEN
+        shell: bash
+        run: |
+          if [ -z "${TPL_TOKEN:-}" ]; then
+            echo "::error::TEMPLATE_SYNC_TOKEN secret is not set"
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+      - name: Merge template main into a sync branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          tpl="$(jq -r '.github.template_repo // "Nfarahat99/assistant-template"' assistant.config.json)"
+          git config user.name "template-sync[bot]"
+          git config user.email "template-sync@users.noreply.github.com"
+          git remote add template "https://x-access-token:${TPL_TOKEN}@github.com/${tpl}.git"
+          git fetch template main
+          git checkout -B template-sync origin/main
+          if ! git merge --no-edit template/main; then
+            # التعارضات: نحتفظ بنسخة المستودع لملفات الهوية فقط
+            for f in assistant.config.json knowledge/owner.md projects.json README.md; do
+              if [ -n "$(git ls-files -u -- "$f")" ]; then
+                git checkout --ours -- "$f"
+                git add -- "$f"
+              fi
+            done
+            unresolved="$(git diff --name-only --diff-filter=U)"
+            if [ -n "$unresolved" ]; then
+              git merge --abort
+              echo "::error::Unresolved merge conflicts with the template:"
+              printf '%s\n' "$unresolved"
+              exit 1
+            fi
+            git commit --no-edit
+          fi
+          if git diff --quiet origin/main template-sync; then echo "no changes"; exit 0; fi
+          git push -f origin template-sync
+          open="$(gh pr list --head template-sync --state open --json number -q 'length')"
+          if [ "$open" = "0" ]; then
+            body="## الشرح
+          تحديثات جديدة من القالب العام. راجعها ووافق من المساعد أو ادمجها من GitHub.
+
+          ## التحقق
+          فُتح هذا الطلب بواسطة PAT، فيشغّل CI الاختبارات عليه تلقائياً."
+            gh pr create --head template-sync --base main --title "[template] تحديثات من القالب" --body "$body"
+          fi

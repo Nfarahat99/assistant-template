@@ -1,0 +1,102 @@
+name: Evals
+run-name: "evals ${{ github.event.pull_request.number || inputs.pr || github.ref_name }}"
+
+# Regression evals for the bot's understanding step (src/evals).
+# - tests: typecheck + npm test (includes the deterministic eval subset — no keys, always runs)
+# - evals: npm run eval against the real model, only when GEMINI_API_KEY / NVIDIA_API_KEY repo secrets exist;
+#          posts (and updates) one PR comment with the score table. The merge preview in the bot reads the
+#          "Eval score: NN%" line from this comment (see README → Evals).
+# Optional repo variables: EVAL_MIN_SCORE (fail the job below this %), LLM_UNDERSTAND_PROVIDER (gemini|nvidia).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: "PR number to comment on (optional)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: evals-${{ github.event.pull_request.number || inputs.pr || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+
+  evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+      LLM_PROVIDER: ${{ vars.LLM_PROVIDER }}
+      LLM_UNDERSTAND_PROVIDER: ${{ vars.LLM_UNDERSTAND_PROVIDER }}
+      EVAL_MIN_SCORE: ${{ vars.EVAL_MIN_SCORE }}
+      PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr }}
+    steps:
+      - name: Check model keys
+        id: keys
+        run: |
+          if [ -n "$GEMINI_API_KEY" ] || [ -n "$NVIDIA_API_KEY" ]; then echo "has=true" >> "$GITHUB_OUTPUT"; else
+            echo "has=false" >> "$GITHUB_OUTPUT"; echo "::notice::No GEMINI_API_KEY/NVIDIA_API_KEY secret — real-model evals skipped (deterministic subset still runs in 'tests')."; fi
+      - uses: actions/checkout@v4
+        if: steps.keys.outputs.has == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.keys.outputs.has == 'true'
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        if: steps.keys.outputs.has == 'true'
+      - name: Run evals
+        id: eval
+        if: steps.keys.outputs.has == 'true'
+        run: |
+          set +e
+          npm run eval -- --json eval-report.json --md eval-report.md
+          code=$?
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Comment on PR
+        if: steps.keys.outputs.has == 'true' && env.PR_NUMBER != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          score=$(node -e "const r=require('./eval-report.json');console.log(r.score)")
+          {
+            echo "<!-- meem-eval -->"
+            echo "**Eval score: ${score}%** — commit ${GITHUB_SHA::7}"
+            echo
+            cat eval-report.md
+            echo
+            echo "<sub>npm run eval · cases: src/evals/seed-cases.ts (+ DB cases via --from-db) · min: ${EVAL_MIN_SCORE:-none}</sub>"
+          } > comment.md
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --edit-last --body-file comment.md \
+            || gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file comment.md
+      - uses: actions/upload-artifact@v4
+        if: steps.keys.outputs.has == 'true'
+        with:
+          name: eval-report
+          path: eval-report.*
+      - name: Gate
+        if: steps.keys.outputs.has == 'true' && steps.eval.outputs.code != '0'
+        run: |
+          echo "::error::Eval score below EVAL_MIN_SCORE (or the eval run crashed) — see eval-report.md"
+          exit 1

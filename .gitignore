@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.env
+.data/
+*.log
+contacts.csv
+version.json
+# junk (sync 2026-09-29)
+.next/
+build/
+out/
+coverage/
+.turbo/
+.vercel/
+.railway/
+.env*
+!.env.example
+venv/
+.venv/
+__pycache__/
+public/dashboard/_shots/
+eval-report.json
+eval-report.md

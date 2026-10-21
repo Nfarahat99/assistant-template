@@ -1,0 +1,426 @@
+[
+ {
+  "folder": "schedules",
+  "repo": "example-user/mawaeedi",
+  "default_branch": "master",
+  "aliases": [
+   "مواعيدي",
+   "المواعيد",
+   "mawaeedi",
+   "schedules",
+   "timetables"
+  ]
+ },
+ {
+  "folder": "waha-attendance",
+  "repo": "example-user/waha-attendance",
+  "default_branch": "main",
+  "aliases": [
+   "حضور الواحة",
+   "حضور",
+   "الحضور",
+   "waha-attendance",
+   "attendance"
+  ]
+ },
+ {
+  "folder": "msgGateway",
+  "repo": "example-user/msg-gateway",
+  "default_branch": "main",
+  "aliases": [
+   "بوابة الرسائل",
+   "msg gateway",
+   "البوابة",
+   "gateway",
+   "msgGateway"
+  ],
+  "note": "maintained from a separate setup; workflow not installed here"
+ },
+ {
+  "folder": "sunbula",
+  "repo": "example-user/sunbula",
+  "default_branch": "master",
+  "aliases": [
+   "سنبلة",
+   "سنبله",
+   "sunbula",
+   "منصة سنبلة"
+  ]
+ },
+ {
+  "folder": "sunbula-site",
+  "repo": "example-user/sunbula-site",
+  "default_branch": "main",
+  "aliases": [
+   "موقع سنبلة",
+   "sunbula site",
+   "sunbula-site"
+  ],
+  "note": "archived 2026-10-01: hosting project deleted by owner; code kept on GitHub"
+ },
+ {
+  "folder": "site",
+  "repo": "example-user/Riyada",
+  "default_branch": "master",
+  "aliases": [
+   "ريادة",
+   "رياده",
+   "riyada"
+  ]
+ },
+ {
+  "folder": "app",
+  "repo": "example-user/nukhba",
+  "default_branch": "develop",
+  "aliases": [
+   "النخبة",
+   "النخبة التعليمية",
+   "nkhba",
+   "nukhba",
+   "nukhba-app"
+  ]
+ },
+ {
+  "folder": "dalil",
+  "repo": "example-user/dalil",
+  "default_branch": "main",
+  "aliases": [
+   "دليل",
+   "dalil",
+   "guide"
+  ]
+ },
+ {
+  "folder": "rawi-studio-site",
+  "repo": "example-user/rawi-web-studio",
+  "default_branch": "main",
+  "aliases": [
+   "راوي",
+   "rawi",
+   "rawi web studio"
+  ]
+ },
+ {
+  "folder": "ufuq-group",
+  "repo": "example-user/ufuq-group",
+  "default_branch": "main",
+  "aliases": [
+   "الأفق",
+   "شركة الأفق",
+   "ufuq",
+   "ufuq group",
+   "ufuq-group"
+  ]
+ },
+ {
+  "folder": "nujoom-plus",
+  "repo": "example-user/nujoom-plus",
+  "default_branch": "master",
+  "aliases": [
+   "نجوم بلس",
+   "نجوم+",
+   "nujoom-plus",
+   "nujoom plus"
+  ]
+ },
+ {
+  "folder": "manara-ai-hub",
+  "repo": "example-user/manara-ai-hub",
+  "default_branch": "master",
+  "aliases": [
+   "منارة",
+   "منصة منارة",
+   "منارة للذكاء الاصطناعي",
+   "manara",
+   "manara ai hub"
+  ]
+ },
+ {
+  "folder": "rawdaV2",
+  "repo": "example-user/rawda",
+  "default_branch": "main",
+  "aliases": [
+   "روضة",
+   "روضه",
+   "rawda",
+   "rawdaV2"
+  ],
+  "note": "hosting project dormant: last deploy FAILED 2026-04-23, database removed; not connected to GitHub"
+ },
+ {
+  "folder": "challenge-club",
+  "repo": "example-user/challenge-club",
+  "default_branch": "master",
+  "aliases": [
+   "نادي التحدي",
+   "challenge club"
+  ]
+ },
+ {
+  "folder": "skyline-game",
+  "repo": "example-user/skyline-run",
+  "default_branch": "main",
+  "aliases": [
+   "اللعبة الأولى",
+   "السباق",
+   "skyline run",
+   "skyline game",
+   "runner game"
+  ]
+ },
+ {
+  "folder": "manara-market",
+  "repo": "example-user/manara-marketplace",
+  "default_branch": "main",
+  "aliases": [
+   "سوق منارة",
+   "سوق الذكاء الاصطناعي",
+   "ai marketplace",
+   "manara marketplace"
+  ]
+ },
+ {
+  "folder": "Raqi",
+  "repo": "example-user/Raqi",
+  "default_branch": "master",
+  "aliases": [
+   "راقي",
+   "راقيه",
+   "raqi"
+  ]
+ },
+ {
+  "folder": "artists-website",
+  "repo": "example-user/artists-website",
+  "default_branch": "main",
+  "aliases": [
+   "موقع الفنانين",
+   "الفنانين",
+   "artists",
+   "artists website"
+  ]
+ },
+ {
+  "folder": "umrah-web",
+  "repo": "example-user/umrah-web",
+  "default_branch": "main",
+  "aliases": [
+   "العمرة",
+   "موقع العمرة",
+   "umrah web",
+   "umrah"
+  ]
+ },
+ {
+  "folder": "umrahWebsite",
+  "repo": "example-user/umrahWebsite",
+  "default_branch": "main",
+  "aliases": [
+   "موقع العمرة القديم",
+   "عمرة",
+   "umrahWebsite",
+   "umrah website"
+  ]
+ },
+ {
+  "folder": "OpsAgent",
+  "repo": "example-user/ops-agent",
+  "default_branch": "master",
+  "aliases": [
+   "وكيل العمليات",
+   "ops agent",
+   "opsagent"
+  ]
+ },
+ {
+  "folder": "ExecAssistant",
+  "repo": "example-user/exec-assistant",
+  "default_branch": "main",
+  "aliases": [
+   "مساعد المدير",
+   "مساعد المدير التنفيذي",
+   "exec assistant"
+  ]
+ },
+ {
+  "folder": "FALCON platform",
+  "repo": "example-user/falcon-platform",
+  "default_branch": "master",
+  "aliases": [
+   "فالكون",
+   "منصة فالكون",
+   "falcon",
+   "falcon platform"
+  ]
+ },
+ {
+  "folder": "RahmaHousing-phase5",
+  "repo": "example-user/rahma-housing-phase5",
+  "default_branch": "master",
+  "aliases": [
+   "رحمة",
+   "رحمة إسكان",
+   "إسكان",
+   "rahma",
+   "rahma housing"
+  ]
+ },
+ {
+  "folder": "app",
+  "repo": "example-user/coastal-wall",
+  "default_branch": "main",
+  "aliases": [
+   "الحاجز الساحلي",
+   "الساحل",
+   "coastal wall",
+   "coastal-wall"
+  ]
+ },
+ {
+  "folder": "players",
+  "repo": "example-user/players",
+  "default_branch": "main",
+  "aliases": [
+   "اللاعبون",
+   "اللاعبين",
+   "players"
+  ]
+ },
+ {
+  "folder": "sagas-web",
+  "repo": "example-user/sagas-web",
+  "default_branch": "main",
+  "aliases": [
+   "ملاحم",
+   "ملاحم ويب",
+   "sagas",
+   "sagas web"
+  ]
+ },
+ {
+  "folder": "Hamish",
+  "repo": "example-user/Hamish",
+  "default_branch": "main",
+  "aliases": [
+   "هوامش",
+   "hamish"
+  ]
+ },
+ {
+  "folder": "SuqyaTesting1",
+  "repo": "example-user/suqya-testing",
+  "default_branch": "main",
+  "aliases": [
+   "سقيا",
+   "اختبار سقيا",
+   "suqya",
+   "suqia",
+   "suqya testing"
+  ]
+ },
+ {
+  "folder": "crm-rebuild",
+  "repo": "example-user/crm-rebuild",
+  "default_branch": "main",
+  "aliases": [
+   "crm",
+   "crm rebuild",
+   "إعادة بناء crm"
+  ]
+ },
+ {
+  "folder": "adl-law",
+  "repo": "example-user/adl-law",
+  "default_branch": "main",
+  "aliases": [
+   "عدل للمحاماة",
+   "عدل",
+   "adl law",
+   "adl-law"
+  ]
+ },
+ {
+  "folder": "manarapdf",
+  "repo": "example-user/manarapdf",
+  "default_branch": "main",
+  "aliases": [
+   "ملفات منارة",
+   "منارة pdf",
+   "manara pdf",
+   "manarapdf"
+  ]
+ },
+ {
+  "folder": "artmag",
+  "repo": "example-user/artmag",
+  "default_branch": "main",
+  "aliases": [
+   "آرت ماج",
+   "artmag",
+   "art mag"
+  ]
+ },
+ {
+  "folder": "chat-transfer",
+  "repo": "example-user/chat-transfer",
+  "default_branch": "main",
+  "aliases": [
+   "نقل المحادثات",
+   "نقل محادثات",
+   "chat transfer",
+   "messages transfer"
+  ]
+ },
+ {
+  "folder": "planconv",
+  "repo": "example-user/planconv",
+  "default_branch": "main",
+  "aliases": [
+   "planconv",
+   "تحويل الخطط"
+  ]
+ },
+ {
+  "folder": "rasid",
+  "repo": "example-user/delivery-tracker",
+  "default_branch": "master",
+  "aliases": [
+   "راصد",
+   "rasid",
+   "delivery tracker"
+  ],
+  "note": "third-party repo; no workflow added"
+ },
+ {
+  "folder": "new-spaces",
+  "repo": "example-user/new-spaces",
+  "default_branch": "master",
+  "aliases": [
+   "مساحات",
+   "masahat",
+   "new spaces"
+  ],
+  "note": "third-party repo; no workflow added"
+ },
+ {
+  "folder": "events-desk",
+  "repo": "example-user/event-agent",
+  "default_branch": "main",
+  "aliases": [
+   "وكيل الفعاليات",
+   "event agent",
+   "راصد الفعاليات"
+  ],
+  "note": "belongs to an organization; personal reusable workflows are not callable from it"
+ },
+ {
+  "folder": "RahmaHousing",
+  "repo": "example-user/RahmaHousing-archive-2026",
+  "default_branch": "master",
+  "aliases": [
+   "رحمة الأرشيف",
+   "rahma archive"
+  ],
+  "note": "kept for reference only"
+ }
+]
